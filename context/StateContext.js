@@ -10,17 +10,32 @@ export const StateContext = ({ children }) => {
     const [totalQuantity, setTotalQuantity] = useState(0);
     const [qty, setQty] = useState(1);
 
+    const setItems = () => {
+        console.log("SET ITEMS");
+        // console.log(cartItems);
+        // console.log(totalPrice);
+        // console.log(totalQuantity);
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
+        localStorage.setItem("totalPrice", JSON.stringify(totalPrice));
+        localStorage.setItem("totalQuantity", JSON.stringify(totalQuantity));
+    }
+
+    useEffect(() => {
+        setItems();
+    }, [cartItems, totalPrice, totalQuantity])
+
     const onAdd = (product, quantity) => {
-        const checkProcutInCart = cartItems.find(item => item._id === product._id);
+        const checkProductInCart = cartItems.find(item => item._id === product._id);
 
         setTotalPrice((prevTotalPrice) => prevTotalPrice + product.price * quantity);
         setTotalQuantity((prevTotalQuantity) => prevTotalQuantity + quantity);
 
-        if (checkProcutInCart) {
+        if (checkProductInCart) {
 
             const updatedCartItems = cartItems.map((cartProduct) => {
-                if (cartProduct._id === product._id)
+                if (cartProduct._id === product._id) {
                     return { ...cartProduct, quantity: cartProduct.quantity + quantity }
+                }
             });
 
             setCartItems(updatedCartItems);
@@ -51,13 +66,11 @@ export const StateContext = ({ children }) => {
         } else if (value == 'dec') {
             if (foundProduct.quantity > 1) {
                 setCartItems([...newCartItems, { ...foundProduct, quantity: foundProduct.quantity - 1 }]);
-                setTotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price);
-                setTotalQuantity((prevTotalQuantity) => prevTotalQuantity - 1);
             } else {
                 setCartItems(newCartItems);
-                setTotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price);
-                setTotalQuantity((prevTotalQuantity) => prevTotalQuantity - 1);
             }
+            setTotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price);
+            setTotalQuantity((prevTotalQuantity) => prevTotalQuantity - 1);
         }
     }
 
@@ -74,7 +87,7 @@ export const StateContext = ({ children }) => {
     }
 
     return (
-        <Context.Provider value={{ showCart, cartItems, totalPrice, totalQuantity, qty, inQty, decQty, onAdd, setShowCart, toggleCartItemQuantity, onRemove }}>
+        <Context.Provider value={{ showCart, cartItems, totalPrice, totalQuantity, qty, inQty, decQty, onAdd, setShowCart, toggleCartItemQuantity, onRemove, setCartItems, setTotalQuantity, setTotalPrice }}>
             {children}
         </Context.Provider>
     )

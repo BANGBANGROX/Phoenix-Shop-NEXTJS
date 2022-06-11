@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 // Components
 import { Product, FooterBanner, HeroBanner } from '../components';
@@ -6,7 +6,20 @@ import { Product, FooterBanner, HeroBanner } from '../components';
 // Sanity client
 import { client } from '../lib/client';
 
+// Context
+import { useStateContext } from '../context/StateContext';
+
 const Home = ({ products, bannerData }) => {
+  const { setCartItems, setTotalPrice, setTotalQuantity } = useStateContext();
+
+  useEffect(() => {
+    if (localStorage.getItem("cartItems")) {
+      setCartItems(JSON.parse(localStorage.getItem("cartItems")));
+      setTotalPrice(Number(JSON.parse(localStorage.getItem("totalPrice"))));
+      setTotalQuantity(Number(JSON.parse(localStorage.getItem("totalQuantity"))));
+    }
+  }, [])
+
   return (
     <>
       <HeroBanner heroBanner={bannerData.length > 0 && bannerData[0]} />

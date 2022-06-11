@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AiOutlineMinus,
   AiOutlinePlus,
@@ -18,7 +18,32 @@ import { useStateContext } from "../../context/StateContext";
 const ProductDetails = ({ product, products }) => {
   const { image, name, details, price } = product;
   const [index, setIndex] = useState(0);
-  const { decQty, inQty, qty, onAdd } = useStateContext();
+  const {
+    setCartItems,
+    setTotalPrice,
+    setTotalQuantity,
+    decQty,
+    inQty,
+    qty,
+    onAdd,
+    setShowCart,
+  } = useStateContext();
+
+  useEffect(() => {
+    if (localStorage.getItem("cartItems")) {
+      setCartItems(JSON.parse(localStorage.getItem("cartItems")));
+      setTotalPrice(Number(JSON.parse(localStorage.getItem("totalPrice"))));
+      setTotalQuantity(
+        Number(JSON.parse(localStorage.getItem("totalQuantity")))
+      );
+    }
+  }, []);
+
+  const handleBuyNow = () => {
+    onAdd(product, qty);
+
+    setShowCart(true);
+  };
 
   return (
     <div>
@@ -79,7 +104,7 @@ const ProductDetails = ({ product, products }) => {
             >
               Add to Cart
             </button>
-            <button type="button" className="buy-now" onClick="">
+            <button type="button" className="buy-now" onClick={handleBuyNow}>
               Buy Now
             </button>
           </div>

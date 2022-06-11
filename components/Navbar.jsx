@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { AiOutlineShopping } from "react-icons/ai";
 
@@ -9,7 +9,25 @@ import Cart from "./Cart";
 import { useStateContext } from "../context/StateContext";
 
 const Navbar = () => {
-  const { showCart, setShowCart, totalQuantity } = useStateContext();
+  const {
+    setCartItems,
+    setTotalPrice,
+    setTotalQuantity,
+    showCart,
+    setShowCart,
+    totalQuantity,
+  } = useStateContext();
+
+  useEffect(() => {
+    if (localStorage.getItem("cartItems")) {
+      setCartItems(JSON.parse(localStorage.getItem("cartItems")));
+      setTotalPrice(Number(JSON.parse(localStorage.getItem("totalPrice"))));
+      setTotalQuantity(
+        Number(JSON.parse(localStorage.getItem("totalQuantity")))
+      );
+    }
+  }, []);
+
   return (
     <div className="navbar-container">
       <p className="logo">
